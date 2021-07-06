@@ -1,17 +1,14 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import newReact from './newReact'
 
-ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById('root')
-);
+/** @jsx newReact.createElement */
+const testElement = (
+  <div>
+    <h1>This is my own implementation of React</h1>
+    <input type="text" />
+    <p>This is another text</p>
+  </div>
+)
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+const rootContainer = document.getElementById('root')
+
+newReact.render(testElement, rootContainer)
