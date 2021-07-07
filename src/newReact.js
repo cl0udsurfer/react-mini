@@ -31,8 +31,9 @@ const createDom = (fiber) => {
   return dom
 }
 
+const isStyle = (key) => key === 'style'
 const isEvent = (key) => key.startsWith('on')
-const isProperty = (key) => key !== 'children' && !isEvent(key)
+const isProperty = (key) => key !== 'children' && !isEvent(key) && !isStyle(key)
 const isGone = (prev, next) => (key) => !(key in next)
 const isNew = (prev, next) => (key) => prev[key] !== next[key]
 
@@ -46,11 +47,26 @@ const updateDom = (dom, prevProps, nextProps) => {
       dom.removeEventListener(eventType, prevProps[name])
     })
 
+  const prevStyle = prevProps.style || {}
+  const nextStyle = nextProps.style || {}
+
+  // Remove old styles
+  Object.keys(prevStyle)
+    .filter(isGone(prevStyle, nextStyle))
+    .forEach((name) => {
+      dom.style[name] = ''
+    })
+
   // Remove old properties
   Object.keys(prevProps)
     .filter(isProperty)
     .filter(isGone(prevProps, nextProps))
     .forEach((name) => (dom[name] = ''))
+
+  // Set new or changes styles
+  Object.keys(nextStyle)
+    .filter(isNew(prevStyle, nextStyle))
+    .forEach((name) => (dom.style[name] = nextStyle[name]))
 
   // Set new or changed properties
   Object.keys(nextProps)

@@ -9,7 +9,7 @@ const App = () => {
 
   return (
     <div>
-      <h1>Hello World</h1>
+      <h1 style={{ backgroundColor: 'red', color: 'blue' }}>Hello World</h1>
       <p onClick={() => setCounter((counter) => counter + 1)}>
         Counter: {counter}
       </p>
