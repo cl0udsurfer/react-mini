@@ -1,11 +1,11 @@
-import newReact from './newReact'
+import VReact from './VReact'
 
-/** @jsx newReact.createElement */
+/** @jsx VReact.createElement */
 
 const rootContainer = document.getElementById('root')
 
 const App = () => {
-  const [counter, setCounter] = newReact.useState(0)
+  const [counter, setCounter] = VReact.useState(0)
 
   return (
     <div>
@@ -17,4 +17,4 @@ const App = () => {
   )
 }
 
-newReact.render(<App />, rootContainer)
+VReact.render(<App />, rootContainer)

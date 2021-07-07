@@ -288,10 +288,10 @@ const commitRoot = (fiber) => {
 
 requestIdleCallback(workLoop)
 
-const newReact = {
+const VReact = {
   createElement,
   render,
   useState,
 }
 
-export default newReact
+export default VReact
