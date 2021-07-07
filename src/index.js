@@ -1,11 +1,11 @@
-import VReact from './VReact'
+import ReactMini from './ReactMini'
 
-/** @jsx VReact.createElement */
+/** @jsx ReactMini.createElement */
 
 const rootContainer = document.getElementById('root')
 
 const App = () => {
-  const [counter, setCounter] = VReact.useState(0)
+  const [counter, setCounter] = ReactMini.useState(0)
 
   return (
     <div>
@@ -17,4 +17,4 @@ const App = () => {
   )
 }
 
-VReact.render(<App />, rootContainer)
+ReactMini.render(<App />, rootContainer)

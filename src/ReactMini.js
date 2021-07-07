@@ -288,10 +288,10 @@ const commitRoot = (fiber) => {
 
 requestIdleCallback(workLoop)
 
-const VReact = {
+const ReactMini = {
   createElement,
   render,
   useState,
 }
 
-export default VReact
+export default ReactMini
