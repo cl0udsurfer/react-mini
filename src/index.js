@@ -4,19 +4,17 @@ import newReact from './newReact'
 
 const rootContainer = document.getElementById('root')
 
-const updateValue = (e) => {
-  rerender(e.target.value)
-}
+const App = () => {
+  const [counter, setCounter] = newReact.useState(0)
 
-const rerender = (value) => {
-  const element = (
+  return (
     <div>
-      <h1>This is my own implementation of React</h1>
-      <input onInput={updateValue} value={value} type="text" />
-      <p>Input Value: {value}</p>
+      <h1>Hello World</h1>
+      <p onClick={() => setCounter((counter) => counter + 1)}>
+        Counter: {counter}
+      </p>
     </div>
   )
-  newReact.render(element, rootContainer)
 }
 
-rerender('Typed Text')
+newReact.render(<App />, rootContainer)
