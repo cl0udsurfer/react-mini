@@ -95,16 +95,44 @@ const commitWork = (fiber) => {
 
   const domParent = domParentFiber.dom
 
-  if (fiber.effectTag === 'PLACEMENT' && fiber.dom != null) {
-    domParent.appendChild(fiber.dom)
-  } else if (fiber.effectTag === 'UPDATE' && fiber.dom != null) {
-    updateDom(fiber.dom, fiber.alternate.props, fiber.props)
-  } else if (fiber.effectTag === 'DELETION' && fiber.dom != null) {
+  if (fiber.effectTag === 'PLACEMENT') {
+    if (fiber.dom != null) {
+      domParent.appendChild(fiber.dom)
+    }
+    runEffects(fiber)
+  } else if (fiber.effectTag === 'UPDATE') {
+    cancelEffects(fiber)
+    if (fiber.dom != null) {
+      updateDom(fiber.dom, fiber.alternate.props, fiber.props)
+    }
+    runEffects(fiber)
+  } else if (fiber.effectTag === 'DELETION') {
+    cancelEffects(fiber)
     commitDeletion(fiber, domParent)
   }
 
   commitWork(fiber.child)
   commitWork(fiber.sibling)
+}
+
+function cancelEffects(fiber) {
+  if (fiber.hooks) {
+    fiber.hooks
+      .filter((hook) => hook.tag === 'effect' && hook.cancel)
+      .forEach((effectHook) => {
+        effectHook.cancel()
+      })
+  }
+}
+
+function runEffects(fiber) {
+  if (fiber.hooks) {
+    fiber.hooks
+      .filter((hook) => hook.tag === 'effect' && hook.effect)
+      .forEach((effectHook) => {
+        effectHook.cancel = effectHook.effect()
+      })
+  }
 }
 
 const commitDeletion = (fiber, domParent) => {
@@ -218,6 +246,31 @@ const useState = (initial) => {
   return [hook.state, setState]
 }
 
+const hasDepsChanged = (prevDeps, nextDeps) =>
+  !prevDeps ||
+  !nextDeps ||
+  prevDeps.length !== nextDeps.length ||
+  prevDeps.some((dep, index) => dep !== nextDeps[index])
+
+const useEffect = (callback, deps) => {
+  const oldHook =
+    wipFiber.alternate &&
+    wipFiber.alternate.hooks &&
+    wipFiber.alternate.hooks[hookIndex]
+
+  const hasChanged = hasDepsChanged(oldHook ? oldHook.deps : null, deps)
+
+  const hook = {
+    tag: 'effect',
+    effect: hasChanged ? callback : null,
+    cancel: hasChanged && oldHook && oldHook.cancel,
+    deps,
+  }
+
+  wipFiber.hooks.push(hook)
+  hookIndex++
+}
+
 const updateHostComponent = (fiber) => {
   if (!fiber.dom) {
     fiber.dom = createDom(fiber)
@@ -292,6 +345,7 @@ const ReactMini = {
   createElement,
   render,
   useState,
+  useEffect,
 }
 
 export default ReactMini

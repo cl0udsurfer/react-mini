@@ -7,6 +7,10 @@ const rootContainer = document.getElementById('root')
 const App = () => {
   const [counter, setCounter] = ReactMini.useState(0)
 
+  ReactMini.useEffect(() => {
+    console.log(counter)
+  }, [counter])
+
   return (
     <div>
       <h1 style={{ backgroundColor: 'red', color: 'blue' }}>Hello World</h1>
